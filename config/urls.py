@@ -6,5 +6,6 @@ admin.site.site_title = "Vardiya Takip"
 
 urlpatterns = [
     path("yonetim/", admin.site.urls),
+    path("vardiya/", include("vardiya.urls")),
     path("", include("hesaplar.urls")),
 ]

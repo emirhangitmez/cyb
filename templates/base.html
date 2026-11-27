@@ -12,6 +12,7 @@
   <a class="logo" href="{% url 'ana_sayfa' %}">Vardiya Takip</a>
   <nav>
     <a href="{% url 'ana_sayfa' %}">Ana sayfa</a>
+    <a href="{% url 'defter' %}">Vardiya Defteri</a>
     {% if user.admin_mi %}<a href="{% url 'panel' %}">Admin paneli</a>{% endif %}
   </nav>
   <div class="kim">

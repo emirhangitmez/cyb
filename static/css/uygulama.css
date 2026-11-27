@@ -53,3 +53,28 @@ tr.pasif td{color:#a0a8b5}
 table.sade td{padding:.4rem 0}
 td.sayi{text-align:right;font-weight:600}
 .buyuk-sayi{font-size:2.4rem;font-weight:700;margin:.2rem 0 .6rem}
+.dugme.buyuk{padding:.75rem 1.3rem;font-size:1.05rem}
+.dugme.yesil{background:var(--basari)}
+.dugme.yesil:hover{background:#166238}
+.blok{margin-bottom:2rem}
+.rozet{display:inline-block;min-width:1.6rem;text-align:center;background:#e7ebf1;border-radius:20px;padding:.05rem .5rem;font-size:.9rem}
+.rozet.uyari{background:#fff1d6;color:#9a5b00}
+.acik-is{border-left:4px solid #e3a008;margin-bottom:.8rem}
+.acik-is p{margin:.35rem 0}
+.acik-ust{display:flex;gap:.8rem;flex-wrap:wrap;align-items:baseline}
+.not{background:#f7f9fc;padding:.4rem .6rem;border-radius:6px}
+.kapat{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.kapat input{flex:1;min-width:220px;padding:.5rem .6rem;border:1px solid var(--cizgi);border-radius:7px;font:inherit}
+.tarih-gezgin{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.tarih-gezgin input,.tarih-gezgin select{padding:.5rem .6rem;border:1px solid var(--cizgi);border-radius:7px;font:inherit;background:#fff}
+.vardiya-baslik{font-weight:600;margin:1.2rem 0 .5rem;display:flex;gap:.8rem;align-items:baseline}
+.vardiya-baslik.simdi{color:var(--ana)}
+td.metin{white-space:normal;min-width:180px;max-width:320px}
+.durum{font-size:.82rem;padding:.15rem .5rem;border-radius:6px;font-weight:600}
+.durum.devam{background:#fff1d6;color:#9a5b00}
+.durum.bitti{background:#e5f5ec;color:var(--basari)}
+.iki-sutun{display:grid;grid-template-columns:1fr 1fr;gap:0 1rem}
+@media (max-width:600px){.iki-sutun{grid-template-columns:1fr}}
+.radyo ul,.radyo div{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.3rem}
+.radyo label label{font-weight:400}
+.form-kart{max-width:680px}

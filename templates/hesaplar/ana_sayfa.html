@@ -4,11 +4,10 @@
 <p class="soluk">{{ user.pozisyon|default:"Admin" }} · {{ user.atolye|default:"Tüm atölyeler" }}</p>
 
 <div class="izgara">
-  <div class="kart modul">
+  <a class="kart modul tiklanir" href="{% url 'defter' %}">
     <h2>Vardiya Defteri</h2>
     <p>Vardiyada yaşanan arızalar, postabaşı bilgisi, notlar ve sonraki vardiyaya devreden işler.</p>
-    <span class="etiket">Yakında (2. adım)</span>
-  </div>
+  </a>
   <div class="kart modul">
     <h2>İş İstekleri ve Görevler</h2>
     <p>{% if user.is_istegi_olusturabilir %}İş isteği oluşturun, atölyeye ve personele atayın, süresini takip edin.{% else %}Size atanan görevleri görün ve durumunu güncelleyin.{% endif %}</p>

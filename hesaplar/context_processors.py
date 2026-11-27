@@ -1,5 +1,5 @@
-from .models import Rol
+from .models import Yetki
 
 
 def kullanici_bilgisi(request):
-    return {"Rol": Rol}
+    return {"Yetki": Yetki}

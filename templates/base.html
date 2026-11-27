@@ -12,10 +12,10 @@
   <a class="logo" href="{% url 'ana_sayfa' %}">Vardiya Takip</a>
   <nav>
     <a href="{% url 'ana_sayfa' %}">Ana sayfa</a>
-    {% if user.kullanici_yonetebilir %}<a href="{% url 'kullanici_listesi' %}">Kullanıcılar</a>{% endif %}
+    {% if user.admin_mi %}<a href="{% url 'panel' %}">Admin paneli</a>{% endif %}
   </nav>
   <div class="kim">
-    <span>{{ user }} · {{ user.get_rol_display }}{% if user.atolye %} · {{ user.get_atolye_display }}{% endif %}</span>
+    <span>{{ user }}{% if user.pozisyon %} · {{ user.pozisyon }}{% elif user.admin_mi %} · Admin{% endif %}{% if user.atolye %} · {{ user.atolye }}{% endif %}</span>
     <a href="{% url 'sifre_degistir' %}">Şifre</a>
     <form method="post" action="{% url 'cikis' %}">{% csrf_token %}<button class="baglanti">Çıkış</button></form>
   </div>

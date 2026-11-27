@@ -1,24 +1,37 @@
 from django.core.management.base import BaseCommand
 
-from hesaplar.models import Atolye, Kullanici, Rol
+from hesaplar.models import Atolye, Kullanici, Pozisyon
 
 ORNEKLER = [
-    ("mudur", "Bakım", "Müdürü", Rol.MUDUR, ""),
-    ("muhendis", "Bakım", "Mühendisi", Rol.MUHENDIS, ""),
-    ("elektrik.formen", "Elektrik", "Formeni", Rol.FORMEN, Atolye.ELEKTRIK),
-    ("mekanik.formen", "Mekanik", "Formeni", Rol.FORMEN, Atolye.MEKANIK),
-    ("elektrik.personel", "Elektrik", "Teknisyeni", Rol.PERSONEL, Atolye.ELEKTRIK),
-    ("mekanik.personel", "Mekanik", "Teknisyeni", Rol.PERSONEL, Atolye.MEKANIK),
+    # kullanıcı adı, ad, soyad, görev, atölye kodu
+    ("mudur", "Bakım", "Müdürü", "Müdür", None),
+    ("muhendis", "Bakım", "Mühendisi", "Mühendis", None),
+    ("elektrik.formen", "Elektrik", "Formeni", "Formen", "ELK"),
+    ("mekanik.formen", "Mekanik", "Formeni", "Formen", "MEK"),
+    ("elektrik.personel", "Elektrik", "Teknisyeni", "Personel", "ELK"),
+    ("mekanik.personel", "Mekanik", "Teknisyeni", "Personel", "MEK"),
 ]
 
 
 class Command(BaseCommand):
-    help = "Deneme için her rolden örnek kullanıcı oluşturur (şifre: 123456). Gerçek kullanımda silin."
+    help = "Deneme için admin ve her görevden örnek kişi oluşturur (şifre: 123456). Gerçek kullanımda kullanmayın."
 
     def handle(self, *args, **kwargs):
-        for kadi, ad, soyad, rol, atolye in ORNEKLER:
+        admin, yeni = Kullanici.objects.get_or_create(
+            username="admin", defaults={"first_name": "Sistem", "last_name": "Yöneticisi", "is_staff": True, "is_superuser": True}
+        )
+        if yeni:
+            admin.set_password("123456")
+            admin.save()
+        for kadi, ad, soyad, gorev, atolye in ORNEKLER:
             k, yeni = Kullanici.objects.get_or_create(
-                username=kadi, defaults={"first_name": ad, "last_name": soyad, "rol": rol, "atolye": atolye}
+                username=kadi,
+                defaults={
+                    "first_name": ad,
+                    "last_name": soyad,
+                    "pozisyon": Pozisyon.objects.get(ad=gorev),
+                    "atolye": Atolye.objects.get(kod=atolye) if atolye else None,
+                },
             )
             if yeni:
                 k.set_password("123456")

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block baslik %}Atölyeler · Vardiya Takip{% endblock %}
+{% block icerik %}
+{% include "panel/menu.html" %}
+<div class="baslik-satir">
+  <h1>Atölyeler</h1>
+  <a class="dugme" href="{% url 'atolye_ekle' %}">+ Yeni atölye</a>
+</div>
+<div class="tablo-kap">
+<table>
+  <thead><tr><th>Atölye</th><th>Kod</th><th>Açıklama</th><th>Kişi sayısı</th><th>Durum</th><th></th></tr></thead>
+  <tbody>
+  {% for a in atolyeler %}
+    <tr class="{% if not a.aktif %}pasif{% endif %}">
+      <td>{{ a }}</td><td>{{ a.kod }}</td><td>{{ a.aciklama }}</td><td>{{ a.sayi }}</td><td>{{ a.aktif|yesno:"Aktif,Pasif" }}</td>
+      <td class="islem"><a href="{% url 'atolye_duzenle' a.pk %}">Düzenle</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

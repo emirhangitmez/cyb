@@ -1,0 +1,8 @@
+{% with ad=request.resolver_match.url_name %}
+<nav class="sekmeler">
+  <a href="{% url 'panel' %}" class="{% if ad == 'panel' %}secili{% endif %}">Özet</a>
+  <a href="{% url 'kisi_listesi' %}" class="{% if 'kisi' in ad %}secili{% endif %}">Kişiler</a>
+  <a href="{% url 'pozisyon_listesi' %}" class="{% if 'pozisyon' in ad %}secili{% endif %}">Görevler</a>
+  <a href="{% url 'atolye_listesi' %}" class="{% if 'atolye' in ad %}secili{% endif %}">Atölyeler</a>
+</nav>
+{% endwith %}

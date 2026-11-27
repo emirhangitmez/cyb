@@ -45,3 +45,11 @@ th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--cizgi);w
 th{background:#f7f9fc;font-size:.85rem;color:var(--soluk)}
 tr.pasif td{color:#a0a8b5}
 .islem a{text-decoration:none}
+.sekmeler{display:flex;gap:.3rem;border-bottom:1px solid var(--cizgi);margin-bottom:1.2rem;flex-wrap:wrap}
+.sekmeler a{padding:.5rem .9rem;text-decoration:none;color:var(--soluk);border-bottom:2px solid transparent;margin-bottom:-1px}
+.sekmeler a.secili{color:var(--ana);border-color:var(--ana);font-weight:600}
+.filtre{display:flex;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap}
+.filtre select{padding:.45rem .6rem;border:1px solid var(--cizgi);border-radius:7px;font:inherit;background:#fff}
+table.sade td{padding:.4rem 0}
+td.sayi{text-align:right;font-weight:600}
+.buyuk-sayi{font-size:2.4rem;font-weight:700;margin:.2rem 0 .6rem}

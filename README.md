@@ -5,16 +5,21 @@ Fabrikanın iç ağındaki bir bilgisayarda çalışır; diğer bilgisayarlardan
 
 ## Durum
 
-- [x] **1. adım:** Giriş sistemi, roller (Müdür, Mühendis, Formen, Personel), atölyeler, kullanıcı yönetimi
+- [x] **1. adım:** Giriş sistemi ve admin paneli (kişiler, görevler, atölyeler)
 - [ ] **2. adım:** Vardiya defteri (arıza kayıtları, postabaşı, notlar, devreden işler)
 - [ ] **3. adım:** İş istekleri ve görevler (atama, süre, otomatik yenilenen liste, bildirim)
 - [ ] **4. adım:** Sunucu kurulumu, otomatik yedek, kullanım kılavuzu
 
-## Roller
+## Admin paneli
 
-| Rol | Yetkiler |
+Admin (`/panel/`) şunları yönetir:
+- **Görevler:** Müdür, Mühendis, Formen, Personel hazır gelir. Yeni görev eklenebilir (ör. Postabaşı) ve her görev bir yetki seviyesine bağlanır.
+- **Atölyeler:** Elektrik ve Mekanik hazır gelir. Yeni atölye eklenebilir.
+- **Kişiler:** Ad soyad, kullanıcı adı (giriş ID), şifre, görev ve atölye atanır. Şifre sıfırlama, pasif yapma.
+
+| Yetki seviyesi | Ne yapabilir |
 |---|---|
-| Müdür | Her şeyi görür, kullanıcı ekler/düzenler, iş isteği oluşturur, görev atayabilir |
+| Müdür | Her şeyi görür, iş isteği oluşturur, görev atayabilir |
 | Mühendis | Tüm atölyeleri görür, iş isteği oluşturur |
 | Formen | Kendi atölyesini görür, iş isteği oluşturur, atölyesindeki personele görev atar |
 | Personel | Kendi atölyesinin vardiya defterini yazar, kendisine atanan görevleri günceller |
@@ -33,9 +38,9 @@ python manage.py runserver 0.0.0.0:8000
 ```
 
 Tarayıcıda `http://localhost:8000` açın. Örnek kullanıcılar (şifre `123456`):
-`mudur`, `muhendis`, `elektrik.formen`, `mekanik.formen`, `elektrik.personel`, `mekanik.personel`.
+`admin`, `mudur`, `muhendis`, `elektrik.formen`, `mekanik.formen`, `elektrik.personel`, `mekanik.personel`.
 
-Gerçek kullanımda örnek kullanıcılar yerine `python manage.py createsuperuser` ile ilk müdür hesabını
-oluşturun, diğer kullanıcıları uygulamadaki **Kullanıcılar** sayfasından ekleyin.
+Gerçek kullanımda örnek kullanıcılar yerine `python manage.py createsuperuser` ile admin hesabını
+oluşturun, diğer kişileri **Admin paneli > Kişiler** sayfasından ekleyin.
 
 Testler: `python manage.py test`

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block baslik %}Görevler · Vardiya Takip{% endblock %}
+{% block icerik %}
+{% include "panel/menu.html" %}
+<div class="baslik-satir">
+  <h1>Görevler</h1>
+  <a class="dugme" href="{% url 'pozisyon_ekle' %}">+ Yeni görev</a>
+</div>
+<p class="soluk">Her görev bir yetki seviyesine bağlıdır. Örneğin "Postabaşı" görevini ekleyip Formen veya Personel yetkisi verebilirsiniz.</p>
+<div class="tablo-kap">
+<table>
+  <thead><tr><th>Görev</th><th>Yetki seviyesi</th><th>Atölye zorunlu</th><th>Kişi sayısı</th><th>Durum</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pozisyonlar %}
+    <tr class="{% if not p.aktif %}pasif{% endif %}">
+      <td>{{ p }}</td><td>{{ p.get_yetki_display }}</td><td>{{ p.atolye_gerekli|yesno:"Evet,Hayır" }}</td>
+      <td>{{ p.sayi }}</td><td>{{ p.aktif|yesno:"Aktif,Pasif" }}</td>
+      <td class="islem"><a href="{% url 'pozisyon_duzenle' p.pk %}">Düzenle</a> · <a href="{% url 'kisi_ekle' %}?gorev={{ p.pk }}">Bu göreve kişi ekle</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

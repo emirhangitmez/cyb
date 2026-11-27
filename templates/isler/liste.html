@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block baslik %}İşler · Vardiya Takip{% endblock %}
+{% block icerik %}
+<div class="baslik-satir">
+  <h1>İşler</h1>
+  {% if user.is_istegi_olusturabilir %}<a class="dugme buyuk" href="{% url 'is_yeni' %}">+ Yeni iş isteği</a>{% endif %}
+</div>
+<nav class="sekmeler">
+  {% for kod, ad in sekmeler %}
+  <a href="?sekme={{ kod }}" class="{% if sekme == kod %}secili{% endif %}">{{ ad }}{% if kod == "bana" %} ({{ sayilar.bana }}){% elif kod == "acik" %} ({{ sayilar.acik }}){% elif kod == "onay" %} ({{ sayilar.onay }}){% endif %}</a>
+  {% endfor %}
+</nav>
+{% if atolyeler and sekme != "biten" %}
+<form class="filtre" method="get"><input type="hidden" name="sekme" value="{{ sekme }}">
+  <select name="atolye" onchange="this.form.submit()">
+    <option value="">Tüm atölyeler</option>
+    {% for a in atolyeler %}<option value="{{ a.pk }}" {% if secili_atolye == a.pk|stringformat:"s" %}selected{% endif %}>{{ a }}</option>{% endfor %}
+  </select>
+</form>
+{% endif %}
+<div class="is-listesi">
+{% for gorev in isler %}
+  <a class="kart is-satir {% if gorev.gecikti_mi %}gecikmis{% elif gorev.oncelik == 'ACIL' and gorev.acik_mi %}acil{% endif %}" href="{{ gorev.get_absolute_url }}">
+    <div class="is-ana">
+      <strong>{% if gorev.oncelik == "ACIL" %}<span class="acil-etiket">ACİL</span> {% endif %}{{ gorev.baslik }}</strong>
+      <span class="soluk">{{ gorev.atolye }}{% if gorev.ekipman %} · {{ gorev.ekipman }}{% endif %} · Açan: {{ gorev.olusturan }}</span>
+    </div>
+    <div class="is-yan">
+      <span>{{ gorev.sorumlu|default:"—" }}</span>
+      <span class="{% if gorev.gecikti_mi %}kirmizi{% else %}soluk{% endif %}">Bitiş: {{ gorev.son_tarih|date:"d.m H:i" }}</span>
+      {% include "isler/rozet.html" %}
+    </div>
+  </a>
+{% empty %}
+  <p class="soluk">Bu listede iş yok.</p>
+{% endfor %}
+</div>
+<script>
+setInterval(function () { if (!document.hidden && !(document.activeElement && document.activeElement.tagName === "SELECT")) location.reload(); }, 30000);
+</script>
+{% endblock %}

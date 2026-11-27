@@ -106,4 +106,6 @@ class Kullanici(AbstractUser):
 
     @property
     def tum_atolyeleri_gorur(self):
-        return self.admin_mi or self.rol in (Yetki.MUDUR, Yetki.MUHENDIS) or not self.atolye_id
+        """Müdür ve admin tüm atölyeleri görür. Mühendis, formen ve personel kendi atölyesiyle sınırlıdır
+        (ör. elektrik bakım mühendisi sadece elektrik atölyesi)."""
+        return self.admin_mi or self.rol == Yetki.MUDUR or not self.atolye_id

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block baslik %}Bildirimler · Vardiya Takip{% endblock %}
+{% block icerik %}
+<h1>Bildirimler</h1>
+<div class="is-listesi">
+{% for b in bildirimler %}
+  <a class="kart is-satir {% if not b.okundu %}okunmamis{% endif %}" href="{{ b.gorev.get_absolute_url }}">
+    <span>{{ b.metin }}</span><span class="soluk">{{ b.zaman|date:"d.m H:i" }}</span>
+  </a>
+{% empty %}<p class="soluk">Bildirim yok.</p>{% endfor %}
+</div>
+{% endblock %}

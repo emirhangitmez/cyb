@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "hesaplar",
+    "vardiya",
+    "isler",
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "hesaplar.context_processors.kullanici_bilgisi",
+                "isler.context_processors.bildirim_sayisi",
             ],
         },
     },

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block baslik %}{{ baslik }} · Vardiya Takip{% endblock %}
+{% block icerik %}
+<div class="kart form-kart">
+  <h1>{{ baslik }}</h1>
+  <form method="post">{% csrf_token %}
+    {% if form.non_field_errors %}<div class="mesaj error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+    {% include "vardiya/alan.html" with alan=form.baslik %}
+    <div class="iki-sutun">
+      {% include "vardiya/alan.html" with alan=form.atolye %}
+      {% include "vardiya/alan.html" with alan=form.ekipman %}
+    </div>
+    {% include "vardiya/alan.html" with alan=form.aciklama %}
+    <div class="iki-sutun">
+      {% include "vardiya/alan.html" with alan=form.son_tarih %}
+      <div class="alan radyo yatay">{{ form.oncelik.label_tag }}{{ form.oncelik }}</div>
+    </div>
+    {% if form.sorumlu %}{% include "vardiya/alan.html" with alan=form.sorumlu %}{% endif %}
+    <div class="dugmeler">
+      <button class="dugme">Kaydet</button>
+      <a class="dugme ikincil" href="{% if gorev %}{{ gorev.get_absolute_url }}{% else %}{% url 'is_listesi' %}{% endif %}">Vazgeç</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

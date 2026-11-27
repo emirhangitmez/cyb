@@ -5,3 +5,7 @@ staticfiles/
 .venv/
 venv/
 yedekler/
+gizli_anahtar.txt
+db.sqlite3-wal
+db.sqlite3-shm
+logs/

@@ -21,7 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("VARDIYA_SECRET_KEY", "gelistirme-anahtari-degistirin")
+def _gizli_anahtar():
+    """Sunucuda ilk çalıştırmada rastgele bir anahtar üretip gizli_anahtar.txt dosyasına yazar."""
+    if os.environ.get("VARDIYA_SECRET_KEY"):
+        return os.environ["VARDIYA_SECRET_KEY"]
+    dosya = BASE_DIR / "gizli_anahtar.txt"
+    if not dosya.exists():
+        from django.core.management.utils import get_random_secret_key
+
+        dosya.write_text(get_random_secret_key(), encoding="utf-8")
+    return dosya.read_text(encoding="utf-8").strip()
+
+
+SECRET_KEY = _gizli_anahtar()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("VARDIYA_DEBUG", "1") == "1"
@@ -45,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -82,6 +95,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        # Aynı anda birden fazla kişi kaydederken "database is locked" hatası olmasın
+        "OPTIONS": {
+            "init_command": "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL;",
+            "transaction_mode": "IMMEDIATE",
+            "timeout": 20,
+        },
     }
 }
 
@@ -128,6 +147,15 @@ AUTH_USER_MODEL = "hesaplar.Kullanici"
 LOGIN_URL = "giris"
 LOGIN_REDIRECT_URL = "ana_sayfa"
 LOGOUT_REDIRECT_URL = "giris"
+
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
+
+# Günlük yedeklerin tutulduğu klasör ve kaç gün saklanacağı
+YEDEK_KLASORU = Path(os.environ.get("VARDIYA_YEDEK_KLASORU", BASE_DIR / "yedekler"))
+YEDEK_GUN = int(os.environ.get("VARDIYA_YEDEK_GUN", "30"))
 
 # Vardiya boyunca oturum açık kalsın (12 saat)
 SESSION_COOKIE_AGE = 60 * 60 * 12

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 
 from .models import Atolye, Kullanici, Pozisyon, Yetki
@@ -107,3 +107,27 @@ class YetkiKurallari(TemelVeri):
         self.assertTrue(self.formen.gorev_atayabilir)
         self.assertTrue(muhendis.gorev_atayabilir)
         self.assertFalse(personel.gorev_atayabilir)
+
+
+class YedekTestleri(TransactionTestCase):
+    def test_yedek_alinir_ve_eskiler_silinir(self):
+        import os
+        import sqlite3
+        import tempfile
+        import time
+        from pathlib import Path
+
+        from django.core.management import call_command
+        from django.test import override_settings
+
+        with tempfile.TemporaryDirectory() as klasor, override_settings(YEDEK_KLASORU=klasor, YEDEK_GUN=30):
+            eski = Path(klasor) / "vardiya-2020-01-01_0200.sqlite3"
+            eski.write_bytes(b"")
+            os.utime(eski, (time.time() - 40 * 86400,) * 2)
+            call_command("yedekle", stdout=open(os.devnull, "w"))
+            yedekler = list(Path(klasor).glob("vardiya-*.sqlite3"))
+            self.assertEqual(len(yedekler), 1)
+            self.assertNotEqual(yedekler[0], eski)
+            with sqlite3.connect(yedekler[0]) as db:
+                tablolar = {r[0] for r in db.execute("select name from sqlite_master where type='table'")}
+            self.assertIn("hesaplar_kullanici", tablolar)

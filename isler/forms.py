@@ -22,7 +22,11 @@ class IsFormu(forms.ModelForm):
 
     def __init__(self, *args, kullanici=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["atolye"].queryset = Atolye.objects.filter(aktif=True)
+        atolyeler = Atolye.objects.filter(aktif=True)
+        if not kullanici.tum_atolyeleri_gorur:
+            # Mühendis ve formen sadece kendi atölyesine iş açar
+            atolyeler = atolyeler.filter(pk=kullanici.atolye_id)
+        self.fields["atolye"].queryset = atolyeler
         self.fields["atolye"].empty_label = "Seçiniz"
         if not self.instance.pk:
             self.fields["son_tarih"].initial = (timezone.localtime() + datetime.timedelta(hours=8)).replace(minute=0, second=0, microsecond=0)
@@ -32,6 +36,8 @@ class IsFormu(forms.ModelForm):
         if not kullanici.gorev_atayabilir:
             del self.fields["sorumlu"]
         else:
+            if not kullanici.tum_atolyeleri_gorur:
+                kisiler = kisiler.filter(atolye_id=kullanici.atolye_id)
             self.fields["sorumlu"].queryset = kisiler.select_related("atolye").order_by("atolye__ad", "first_name")
             self.fields["sorumlu"].label_from_instance = lambda k: f"{k} ({k.atolye.kod if k.atolye else '-'})"
             self.fields["sorumlu"].empty_label = "Şimdilik atama (formen atasın)"

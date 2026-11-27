@@ -70,13 +70,18 @@ class AdminPaneliTestleri(TemelVeri):
         })
         self.assertContains(r, "atölye seçilmelidir")
 
-    def test_muhendis_atolyesiz_olabilir(self):
+    def test_muhendis_atolyeye_baglidir(self):
         self.client.force_login(self.admin)
-        self.client.post(reverse("kisi_ekle"), {
+        r = self.client.post(reverse("kisi_ekle"), {
             "first_name": "Ayşe", "username": "ayse", "pozisyon": self.muhendis_g.pk, "atolye": "",
             "is_active": "on", "sifre1": "abc123", "sifre2": "abc123",
         })
-        self.assertTrue(Kullanici.objects.get(username="ayse").tum_atolyeleri_gorur)
+        self.assertContains(r, "atölye seçilmelidir")
+        self.client.post(reverse("kisi_ekle"), {
+            "first_name": "Ayşe", "username": "ayse", "pozisyon": self.muhendis_g.pk, "atolye": self.elk.pk,
+            "is_active": "on", "sifre1": "abc123", "sifre2": "abc123",
+        })
+        self.assertFalse(Kullanici.objects.get(username="ayse").tum_atolyeleri_gorur)
 
     def test_yeni_gorev_ve_atolye_eklenir(self):
         self.client.force_login(self.admin)

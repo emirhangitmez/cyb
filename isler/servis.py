@@ -7,10 +7,14 @@ from hesaplar.models import Kullanici, Yetki
 from .models import ACIK_DURUMLAR, Bildirim, Durum, Hareket, Is
 
 
-def _bildir(is_, kisiler, metin, haric=None):
+def _bildir(is_, kisiler, metin, haric=None, mudur_dahil=False):
+    """Bildirim gönderir. Müdüre varsayılan olarak bildirim gitmez; sadece kendi açtığı iş
+    bittiğinde haber verilir (mudur_dahil=True)."""
     gorulen = set()
     for k in kisiler:
-        if k and k.is_active and k.pk not in gorulen and (haric is None or k.pk != haric.pk):
+        if not k or (k.mudur_mu and not mudur_dahil):
+            continue
+        if k.is_active and k.pk not in gorulen and (haric is None or k.pk != haric.pk):
             gorulen.add(k.pk)
             Bildirim.objects.create(alici=k, gorev=is_, metin=metin)
 
@@ -19,12 +23,16 @@ def _formenler(is_):
     return Kullanici.objects.filter(is_active=True, atolye_id=is_.atolye_id, pozisyon__yetki=Yetki.FORMEN)
 
 
+def _muhendisler(is_):
+    return Kullanici.objects.filter(is_active=True, atolye_id=is_.atolye_id, pozisyon__yetki=Yetki.MUHENDIS)
+
+
 def kaydet_yeni(is_, kisi):
     is_.olusturan = kisi
     is_.durum = Durum.ATANDI if is_.sorumlu_id else Durum.ATANMADI
     is_.save()
     Hareket.objects.create(gorev=is_, kisi=kisi, metin="İşi oluşturdu.")
-    _bildir(is_, _formenler(is_), f"Yeni iş: {is_.baslik} ({is_.atolye})", haric=kisi)
+    _bildir(is_, [*_formenler(is_), *_muhendisler(is_)], f"Yeni iş: {is_.baslik} ({is_.atolye})", haric=kisi)
     if is_.sorumlu_id:
         Hareket.objects.create(gorev=is_, kisi=kisi, metin=f"{is_.sorumlu} kişisine atadı.")
         _bildir(is_, [is_.sorumlu], f"Size iş atandı: {is_.baslik}", haric=kisi)
@@ -50,7 +58,7 @@ def bitir(is_, kisi, notu):
     is_.tamamlanma = timezone.now()
     is_.save()
     Hareket.objects.create(gorev=is_, kisi=kisi, metin="İşi tamamladı." + (f" {notu}" if notu else ""))
-    _bildir(is_, [is_.olusturan, *_formenler(is_)], f"İş tamamlandı, onay bekliyor: {is_.baslik}", haric=kisi)
+    _bildir(is_, [*_muhendisler(is_), is_.olusturan], f"İş tamamlandı, onay bekliyor: {is_.baslik}", haric=kisi)
 
 
 def onayla(is_, kisi):
@@ -58,6 +66,8 @@ def onayla(is_, kisi):
     is_.save()
     Hareket.objects.create(gorev=is_, kisi=kisi, metin="Onayladı ve işi kapattı.")
     _bildir(is_, [is_.sorumlu], f"İşiniz onaylandı: {is_.baslik}", haric=kisi)
+    # İşi açan kişiye (müdür dahil) "işiniz bitti" haberi
+    _bildir(is_, [is_.olusturan], f"Açtığınız iş tamamlandı: {is_.baslik}", haric=kisi, mudur_dahil=True)
 
 
 def geri_gonder(is_, kisi, notu):
@@ -80,7 +90,7 @@ def gecikmeleri_bildir():
         is_.gecikme_bildirildi = True
         is_.save(update_fields=["gecikme_bildirildi"])
         Hareket.objects.create(gorev=is_, kisi=None, metin="Süre doldu.")
-        _bildir(is_, [is_.sorumlu, is_.olusturan, *_formenler(is_)], f"Süresi doldu: {is_.baslik}")
+        _bildir(is_, [is_.sorumlu, is_.olusturan, *_formenler(is_), *_muhendisler(is_)], f"Süresi doldu: {is_.baslik}")
 
 
 def gorunur_isler(k):

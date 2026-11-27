@@ -27,7 +27,7 @@ class DefterTestleri(TestCase):
         personel = Pozisyon.objects.get(ad="Personel")
         self.ali = Kullanici.objects.create_user("ali", password="x", first_name="Ali", pozisyon=personel, atolye=self.elk)
         self.veli = Kullanici.objects.create_user("veli", password="x", first_name="Veli", pozisyon=personel, atolye=self.mek)
-        self.muhendis = Kullanici.objects.create_user("ayse", password="x", pozisyon=Pozisyon.objects.get(ad="Mühendis"))
+        self.mudur = Kullanici.objects.create_user("ayse", password="x", pozisyon=Pozisyon.objects.get(ad="Müdür"))
 
     def _kayit(self, kisi, atolye, **ek):
         veri = dict(atolye=atolye, postabasi=kisi, olusturan=kisi, ekipman="Pres 3", ariza="Motor ısındı", yapilan_is="Fan değişti")
@@ -67,7 +67,7 @@ class DefterTestleri(TestCase):
         r = self.client.get(reverse("defter"))
         self.assertContains(r, "ELK-ISI")
         self.assertNotContains(r, "MEK-ISI")
-        self.client.force_login(self.muhendis)
+        self.client.force_login(self.mudur)
         r = self.client.get(reverse("defter"))
         self.assertContains(r, "ELK-ISI")
         self.assertContains(r, "MEK-ISI")

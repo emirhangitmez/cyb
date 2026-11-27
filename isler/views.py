@@ -89,6 +89,7 @@ def detay(request, pk):
         "gorev": is_,
         "hareketler": is_.hareketler.select_related("kisi"),
         "yonetebilir": is_.yonetebilir(k),
+        "onaylayabilir": is_.onaylayabilir(k),
         "calisabilir": is_.calisabilir(k),
         "kisiler": is_.atanabilir_kisiler() if is_.yonetebilir(k) else None,
         "Durum": Durum,
@@ -111,10 +112,10 @@ def islem(request, pk):
     elif eylem == "bitir" and is_.calisabilir(k) and is_.durum in (Durum.ATANDI, Durum.DEVAM):
         servis.bitir(is_, k, notu)
         messages.success(request, "İş tamamlandı, onaya gönderildi.")
-    elif eylem == "onayla" and is_.yonetebilir(k) and is_.durum == Durum.TAMAMLANDI:
+    elif eylem == "onayla" and is_.onaylayabilir(k) and is_.durum == Durum.TAMAMLANDI:
         servis.onayla(is_, k)
         messages.success(request, "İş onaylandı ve kapandı.")
-    elif eylem == "geri" and is_.yonetebilir(k) and is_.durum == Durum.TAMAMLANDI:
+    elif eylem == "geri" and is_.onaylayabilir(k) and is_.durum == Durum.TAMAMLANDI:
         servis.geri_gonder(is_, k, notu)
         messages.success(request, "İş geri gönderildi.")
     elif eylem == "yorum" and is_.gorebilir(k) and notu:

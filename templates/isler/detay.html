@@ -45,7 +45,7 @@
       </form>
       {% endif %}
 
-      {% if yonetebilir and gorev.durum == "TAMAMLANDI" %}
+      {% if onaylayabilir and gorev.durum == "TAMAMLANDI" %}
       <form method="post" action="{% url 'is_islem' gorev.pk %}" class="satir-form">{% csrf_token %}
         <input name="notu" placeholder="Geri gönderirseniz nedenini yazın">
         <button class="dugme yesil" name="eylem" value="onayla">Onayla ve kapat</button>

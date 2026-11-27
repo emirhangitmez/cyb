@@ -5,7 +5,8 @@ from hesaplar.models import Atolye, Kullanici, Pozisyon
 ORNEKLER = [
     # kullanıcı adı, ad, soyad, görev, atölye kodu
     ("mudur", "Bakım", "Müdürü", "Müdür", None),
-    ("muhendis", "Bakım", "Mühendisi", "Mühendis", None),
+    ("elektrik.muhendis", "Elektrik Bakım", "Mühendisi", "Mühendis", "ELK"),
+    ("mekanik.muhendis", "Mekanik Bakım", "Mühendisi", "Mühendis", "MEK"),
     ("elektrik.formen", "Elektrik", "Formeni", "Formen", "ELK"),
     ("mekanik.formen", "Mekanik", "Formeni", "Formen", "MEK"),
     ("elektrik.personel", "Elektrik", "Teknisyeni", "Personel", "ELK"),

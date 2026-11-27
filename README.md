@@ -19,9 +19,9 @@ Admin (`/panel/`) şunları yönetir:
 
 | Yetki seviyesi | Ne yapabilir |
 |---|---|
-| Müdür | Her şeyi görür, iş isteği oluşturur, işe personel atar |
-| Mühendis | Tüm atölyeleri görür, iş isteği oluşturur, işe personel atar |
-| Formen | Kendi atölyesini görür, iş isteği oluşturur, işe personel atar |
+| Müdür | Tüm atölyeleri görür, iş açar, personel atar, onay hakkı vardır. Sadece kendi açtığı iş bitince bildirim alır |
+| Mühendis | Kendi atölyesine bağlıdır (ör. elektrik bakım mühendisi). O atölyede iş açar, personel atar, biten işleri onaylar |
+| Formen | Kendi atölyesinde iş açar ve personel atar |
 | Personel | Kendi atölyesinin vardiya defterini yazar, kendisine atanan görevleri günceller |
 
 ## Vardiya defteri
@@ -36,12 +36,13 @@ Admin (`/panel/`) şunları yönetir:
 ## İşler (iş istekleri ve görevler)
 
 `/isler/` sayfası:
-- **Müdür, mühendis veya formen** iş isteği açar: ne yapılacak, atölye, makine, bitiş süresi, öncelik (Normal/Acil). İsterse kişiyi de hemen atar; atamazsa atölyenin formenine bildirim gider.
+- **Müdür, mühendis veya formen** iş isteği açar (mühendis ve formen sadece kendi atölyesine): ne yapılacak, atölye, makine, bitiş süresi, öncelik (Normal/Acil). İsterse kişiyi de hemen atar; atamazsa atölyenin formenine bildirim gider.
 - **Müdür, mühendis ve formen** işe personel atayabilir veya kişiyi değiştirebilir.
 - **Atanan kişi** "İşe başladım" ve "İş bitti" der.
-- **İşi açan veya yöneten kişi** "Onayla ve kapat" ya da "Geri gönder" der.
+- **Atölyenin mühendisi** "Onayla ve kapat" ya da "Geri gönder" der. Müdürün de onay hakkı vardır ama beklenmez; formen onaylamaz.
 - Durumlar: Kişi bekliyor → Atandı → Devam ediyor → Onay bekliyor → Onaylandı.
-- Süresi dolan iş kırmızı görünür; atanan kişiye, işi açana ve atölye formenine bildirim gider.
+- Süresi dolan iş kırmızı görünür; atanan kişiye, işi açana, atölye formenine ve mühendisine bildirim gider.
+- Müdüre ara aşamalarda bildirim gitmez; sadece kendi açtığı iş onaylanıp bitince haber verilir.
 - Üstteki 🔔 zil 15 saniyede bir kontrol edilir; yeni bildirim gelince sağ altta kısa bir uyarı çıkar.
 - Her işin altında geçmiş ve not alanı vardır.
 
@@ -59,7 +60,7 @@ python manage.py runserver 0.0.0.0:8000
 ```
 
 Tarayıcıda `http://localhost:8000` açın. Örnek kullanıcılar (şifre `123456`):
-`admin`, `mudur`, `muhendis`, `elektrik.formen`, `mekanik.formen`, `elektrik.personel`, `mekanik.personel`.
+`admin`, `mudur`, `elektrik.muhendis`, `mekanik.muhendis`, `elektrik.formen`, `mekanik.formen`, `elektrik.personel`, `mekanik.personel`.
 
 Gerçek kullanımda örnek kullanıcılar yerine `python manage.py createsuperuser` ile admin hesabını
 oluşturun, diğer kişileri **Admin paneli > Kişiler** sayfasından ekleyin.

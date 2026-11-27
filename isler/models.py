@@ -61,10 +61,16 @@ class Is(models.Model):
 
     # --- Kim ne yapabilir ---
     def yonetebilir(self, k):
-        """Kişi atama, onaylama, düzenleme: müdür/mühendis her işte, formen kendi atölyesinde, bir de işi açan kişi."""
+        """Kişi atama ve düzenleme: müdür her işte; mühendis ve formen sadece kendi atölyesinin işlerinde."""
         if not k.gorev_atayabilir:
             return False
-        return k.tum_atolyeleri_gorur or k.atolye_id == self.atolye_id or k.pk == self.olusturan_id
+        return k.tum_atolyeleri_gorur or k.atolye_id == self.atolye_id
+
+    def onaylayabilir(self, k):
+        """Onay atölyenin mühendisinindir. Müdürün de onay hakkı vardır ama beklenmez. Formen onaylamaz."""
+        if k.mudur_mu:
+            return True
+        return k.muhendis_mi and (not k.atolye_id or k.atolye_id == self.atolye_id)
 
     def calisabilir(self, k):
         """Başladım / Bitirdim: atanan kişi veya yönetebilenler."""

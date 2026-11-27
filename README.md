@@ -7,7 +7,7 @@ Fabrikanın iç ağındaki bir bilgisayarda çalışır; diğer bilgisayarlardan
 
 - [x] **1. adım:** Giriş sistemi ve admin paneli (kişiler, görevler, atölyeler)
 - [x] **2. adım:** Vardiya defteri (arıza kayıtları, postabaşı, notlar, devreden işler)
-- [ ] **3. adım:** İş istekleri ve görevler (atama, süre, otomatik yenilenen liste, bildirim)
+- [x] **3. adım:** İş istekleri ve görevler (atama, süre, otomatik yenilenen liste, bildirim)
 - [ ] **4. adım:** Sunucu kurulumu, otomatik yedek, kullanım kılavuzu
 
 ## Admin paneli
@@ -32,6 +32,18 @@ Admin (`/panel/`) şunları yönetir:
 - Her kayıtta: tarih, vardiya, atölye, postabaşı, makine/hat, arıza, yapılan iş, durum ve not.
 - Personel ve formen sadece kendi atölyesini görür; müdür ve mühendis tümünü görür.
 - Sayfa 30 saniyede bir kendini yeniler (kullanıcı yazı yazarken yenilenmez).
+
+## İşler (iş istekleri ve görevler)
+
+`/isler/` sayfası:
+- **Müdür, mühendis veya formen** iş isteği açar: ne yapılacak, atölye, makine, bitiş süresi, öncelik (Normal/Acil). İsterse kişiyi de hemen atar; atamazsa atölyenin formenine bildirim gider.
+- **Müdür, mühendis ve formen** işe personel atayabilir veya kişiyi değiştirebilir.
+- **Atanan kişi** "İşe başladım" ve "İş bitti" der.
+- **İşi açan veya yöneten kişi** "Onayla ve kapat" ya da "Geri gönder" der.
+- Durumlar: Kişi bekliyor → Atandı → Devam ediyor → Onay bekliyor → Onaylandı.
+- Süresi dolan iş kırmızı görünür; atanan kişiye, işi açana ve atölye formenine bildirim gider.
+- Üstteki 🔔 zil 15 saniyede bir kontrol edilir; yeni bildirim gelince sağ altta kısa bir uyarı çıkar.
+- Her işin altında geçmiş ve not alanı vardır.
 
 ## Bilgisayarda deneme (Windows)
 

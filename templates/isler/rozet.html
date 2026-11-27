@@ -1,0 +1,6 @@
+{% if gorev.durum == "ONAYLANDI" %}<span class="durum bitti">Onaylandı</span>
+{% elif gorev.durum == "TAMAMLANDI" %}<span class="durum onay">Onay bekliyor</span>
+{% elif gorev.gecikti_mi %}<span class="durum gecikti">Süresi doldu</span>
+{% elif gorev.durum == "DEVAM" %}<span class="durum devam">Devam ediyor</span>
+{% elif gorev.durum == "ATANDI" %}<span class="durum atandi">Atandı</span>
+{% else %}<span class="durum atanmadi">Kişi bekliyor</span>{% endif %}

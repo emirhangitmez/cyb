@@ -8,11 +8,10 @@
     <h2>Vardiya Defteri</h2>
     <p>Vardiyada yaşanan arızalar, postabaşı bilgisi, notlar ve sonraki vardiyaya devreden işler.</p>
   </a>
-  <div class="kart modul">
+  <a class="kart modul tiklanir" href="{% url 'is_listesi' %}">
     <h2>İş İstekleri ve Görevler</h2>
-    <p>{% if user.is_istegi_olusturabilir %}İş isteği oluşturun, atölyeye ve personele atayın, süresini takip edin.{% else %}Size atanan görevleri görün ve durumunu güncelleyin.{% endif %}</p>
-    <span class="etiket">Yakında (3. adım)</span>
-  </div>
+    <p>{% if user.is_istegi_olusturabilir %}İş isteği oluşturun, kişi atayın, süresini takip edin.{% else %}Size atanan işleri görün, başladım / bitti deyin.{% endif %}</p>
+  </a>
   {% if user.admin_mi %}
   <a class="kart modul tiklanir" href="{% url 'panel' %}">
     <h2>Admin Paneli</h2>

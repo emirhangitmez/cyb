@@ -13,9 +13,11 @@
   <nav>
     <a href="{% url 'ana_sayfa' %}">Ana sayfa</a>
     <a href="{% url 'defter' %}">Vardiya Defteri</a>
+    <a href="{% url 'is_listesi' %}">İşler</a>
     {% if user.admin_mi %}<a href="{% url 'panel' %}">Admin paneli</a>{% endif %}
   </nav>
   <div class="kim">
+    <a class="zil" href="{% url 'bildirimler' %}" title="Bildirimler">🔔<span id="zil-sayi" class="zil-sayi"{% if not okunmamis_bildirim %} hidden{% endif %}>{{ okunmamis_bildirim }}</span></a>
     <span>{{ user }}{% if user.pozisyon %} · {{ user.pozisyon }}{% elif user.admin_mi %} · Admin{% endif %}{% if user.atolye %} · {{ user.atolye }}{% endif %}</span>
     <a href="{% url 'sifre_degistir' %}">Şifre</a>
     <form method="post" action="{% url 'cikis' %}">{% csrf_token %}<button class="baglanti">Çıkış</button></form>
@@ -26,5 +28,29 @@
   {% for m in messages %}<div class="mesaj {{ m.tags }}">{{ m }}</div>{% endfor %}
   {% block icerik %}{% endblock %}
 </main>
+{% if user.is_authenticated %}
+<div id="bildirim-kutu" class="bildirim-kutu" hidden><a id="bildirim-link" href="#"></a><button type="button" onclick="this.parentNode.hidden=true">×</button></div>
+<script>
+// Yeni iş, atama, süre dolumu gibi bildirimler 15 saniyede bir kontrol edilir.
+(function () {
+  var sonId = null;
+  function kontrol() {
+    if (document.hidden) return;
+    fetch("{% url 'bildirim_durumu' %}", {credentials: "same-origin"}).then(function (r) { return r.json(); }).then(function (v) {
+      var etiket = document.getElementById("zil-sayi");
+      etiket.textContent = v.sayi; etiket.hidden = !v.sayi;
+      document.title = document.title.replace(/^\(\d+\) /, "");
+      if (v.sayi) document.title = "(" + v.sayi + ") " + document.title;
+      if (sonId !== null && v.son_id && v.son_id !== sonId) {
+        var kutu = document.getElementById("bildirim-kutu"), link = document.getElementById("bildirim-link");
+        link.textContent = "🔔 " + v.son_metin; link.href = v.son_url; kutu.hidden = false;
+      }
+      sonId = v.son_id;
+    }).catch(function () {});
+  }
+  kontrol(); setInterval(kontrol, 15000);
+})();
+</script>
+{% endif %}
 </body>
 </html>

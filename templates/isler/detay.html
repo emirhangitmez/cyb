@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block baslik %}{{ gorev.baslik }} · Vardiya Takip{% endblock %}
+{% block icerik %}
+<p><a href="{% url 'is_listesi' %}">‹ İşler</a></p>
+<div class="detay-izgara">
+  <div>
+    <div class="kart">
+      <div class="baslik-satir">
+        <h1>{% if gorev.oncelik == "ACIL" %}<span class="acil-etiket">ACİL</span> {% endif %}{{ gorev.baslik }}</h1>
+        {% include "isler/rozet.html" %}
+      </div>
+      {% if gorev.aciklama %}<p>{{ gorev.aciklama|linebreaksbr }}</p>{% endif %}
+      <dl class="bilgi">
+        <dt>Atölye</dt><dd>{{ gorev.atolye }}</dd>
+        {% if gorev.ekipman %}<dt>Makine / Hat</dt><dd>{{ gorev.ekipman }}</dd>{% endif %}
+        <dt>Atanan kişi</dt><dd>{{ gorev.sorumlu|default:"Henüz atanmadı" }}</dd>
+        <dt>Bitiş süresi</dt><dd class="{% if gorev.gecikti_mi %}kirmizi{% endif %}">{{ gorev.son_tarih|date:"d.m.Y H:i" }}{% if gorev.gecikti_mi %} (süresi doldu){% elif gorev.acik_mi %} ({{ gorev.son_tarih|timeuntil }} kaldı){% endif %}</dd>
+        <dt>Açan</dt><dd>{{ gorev.olusturan }} · {{ gorev.olusturma|date:"d.m.Y H:i" }}</dd>
+      </dl>
+    </div>
+
+    <div class="kart eylemler">
+      {% if yonetebilir and gorev.acik_mi %}
+      <form method="post" action="{% url 'is_islem' gorev.pk %}" class="satir-form">{% csrf_token %}
+        <input type="hidden" name="eylem" value="ata">
+        <select name="sorumlu" required>
+          <option value="">{% if gorev.sorumlu %}Başka birine ata…{% else %}Kişi seçin…{% endif %}</option>
+          {% for k in kisiler %}<option value="{{ k.pk }}">{{ k }}</option>{% endfor %}
+        </select>
+        <button class="dugme">{% if gorev.sorumlu %}Değiştir{% else %}Ata{% endif %}</button>
+      </form>
+      {% endif %}
+
+      {% if calisabilir and gorev.durum == "ATANDI" %}
+      <form method="post" action="{% url 'is_islem' gorev.pk %}">{% csrf_token %}
+        <input type="hidden" name="eylem" value="basla"><button class="dugme genis">İşe başladım</button>
+      </form>
+      {% endif %}
+
+      {% if calisabilir and gorev.durum == "ATANDI" or calisabilir and gorev.durum == "DEVAM" %}
+      <form method="post" action="{% url 'is_islem' gorev.pk %}" class="satir-form">{% csrf_token %}
+        <input type="hidden" name="eylem" value="bitir">
+        <input name="notu" placeholder="Ne yapıldı? (isteğe bağlı)">
+        <button class="dugme yesil">İş bitti</button>
+      </form>
+      {% endif %}
+
+      {% if yonetebilir and gorev.durum == "TAMAMLANDI" %}
+      <form method="post" action="{% url 'is_islem' gorev.pk %}" class="satir-form">{% csrf_token %}
+        <input name="notu" placeholder="Geri gönderirseniz nedenini yazın">
+        <button class="dugme yesil" name="eylem" value="onayla">Onayla ve kapat</button>
+        <button class="dugme ikincil" name="eylem" value="geri">Geri gönder</button>
+      </form>
+      {% endif %}
+
+      {% if yonetebilir %}<a href="{% url 'is_duzenle' gorev.pk %}">İşi düzenle (süre, açıklama, atölye)</a>{% endif %}
+    </div>
+  </div>
+
+  <div class="kart">
+    <h2>Geçmiş ve notlar</h2>
+    <ul class="zaman-cizelgesi">
+      {% for h in hareketler %}
+      <li><span class="soluk">{{ h.zaman|date:"d.m H:i" }}</span> <strong>{{ h.kisi|default:"Sistem" }}</strong> {{ h.metin|linebreaksbr }}</li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="{% url 'is_islem' gorev.pk %}" class="satir-form">{% csrf_token %}
+      <input type="hidden" name="eylem" value="yorum">
+      <input name="notu" placeholder="Not yaz…" required>
+      <button class="dugme ikincil">Ekle</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

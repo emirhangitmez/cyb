@@ -1,0 +1,29 @@
+{% load static %}<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block baslik %}Vardiya Takip{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/uygulama.css' %}">
+</head>
+<body>
+{% if user.is_authenticated %}
+<header class="ust">
+  <a class="logo" href="{% url 'ana_sayfa' %}">Vardiya Takip</a>
+  <nav>
+    <a href="{% url 'ana_sayfa' %}">Ana sayfa</a>
+    {% if user.kullanici_yonetebilir %}<a href="{% url 'kullanici_listesi' %}">Kullanıcılar</a>{% endif %}
+  </nav>
+  <div class="kim">
+    <span>{{ user }} · {{ user.get_rol_display }}{% if user.atolye %} · {{ user.get_atolye_display }}{% endif %}</span>
+    <a href="{% url 'sifre_degistir' %}">Şifre</a>
+    <form method="post" action="{% url 'cikis' %}">{% csrf_token %}<button class="baglanti">Çıkış</button></form>
+  </div>
+</header>
+{% endif %}
+<main class="{% block main_sinif %}icerik{% endblock %}">
+  {% for m in messages %}<div class="mesaj {{ m.tags }}">{{ m }}</div>{% endfor %}
+  {% block icerik %}{% endblock %}
+</main>
+</body>
+</html>

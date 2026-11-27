@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block baslik %}Giriş · Vardiya Takip{% endblock %}
+{% block main_sinif %}giris-sayfa{% endblock %}
+{% block icerik %}
+<div class="kart giris-kart">
+  <h1>Vardiya Takip</h1>
+  <p class="soluk">Bakım vardiya defteri ve iş takip sistemi</p>
+  <form method="post">{% csrf_token %}
+    {% include "form_alanlari.html" %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="dugme genis">Giriş yap</button>
+  </form>
+</div>
+{% endblock %}

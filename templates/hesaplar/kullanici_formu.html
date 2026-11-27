@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block baslik %}{{ baslik }} · Vardiya Takip{% endblock %}
+{% block icerik %}
+<div class="kart form-kart">
+  <h1>{{ baslik }}</h1>
+  <form method="post">{% csrf_token %}
+    {% include "form_alanlari.html" %}
+    <div class="dugmeler">
+      <button class="dugme">Kaydet</button>
+      <a class="dugme ikincil" href="{% if user.kullanici_yonetebilir and 'kullanicilar' in request.path %}{% url 'kullanici_listesi' %}{% else %}{% url 'ana_sayfa' %}{% endif %}">Vazgeç</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

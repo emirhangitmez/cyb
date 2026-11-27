@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block icerik %}
+<h1>Hoş geldin, {{ user.first_name|default:user.username }}</h1>
+<p class="soluk">{{ user.pozisyon|default:"Admin" }} · {{ user.atolye|default:"Tüm atölyeler" }}</p>
+
+<div class="izgara">
+  <div class="kart modul">
+    <h2>Vardiya Defteri</h2>
+    <p>Vardiyada yaşanan arızalar, postabaşı bilgisi, notlar ve sonraki vardiyaya devreden işler.</p>
+    <span class="etiket">Yakında (2. adım)</span>
+  </div>
+  <div class="kart modul">
+    <h2>İş İstekleri ve Görevler</h2>
+    <p>{% if user.is_istegi_olusturabilir %}İş isteği oluşturun, atölyeye ve personele atayın, süresini takip edin.{% else %}Size atanan görevleri görün ve durumunu güncelleyin.{% endif %}</p>
+    <span class="etiket">Yakında (3. adım)</span>
+  </div>
+  {% if user.admin_mi %}
+  <a class="kart modul tiklanir" href="{% url 'panel' %}">
+    <h2>Admin Paneli</h2>
+    <p>Kişileri, görevleri (müdür, mühendis, formen, personel) ve atölyeleri yönetin; kişilere görev ve atölye atayın.</p>
+  </a>
+  {% endif %}
+</div>
+{% endblock %}

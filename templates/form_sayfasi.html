@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block baslik %}{{ baslik }} · Vardiya Takip{% endblock %}
+{% block icerik %}
+{% if panel %}{% include "panel/menu.html" %}{% endif %}
+<div class="kart form-kart">
+  <h1>{{ baslik }}</h1>
+  <form method="post">{% csrf_token %}
+    {% include "form_alanlari.html" %}
+    <div class="dugmeler">
+      <button class="dugme">Kaydet</button>
+      <a class="dugme ikincil" href="{% url geri %}">Vazgeç</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

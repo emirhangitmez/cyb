@@ -6,7 +6,7 @@ Fabrikanın iç ağındaki bir bilgisayarda çalışır; diğer bilgisayarlardan
 ## Durum
 
 - [x] **1. adım:** Giriş sistemi ve admin paneli (kişiler, görevler, atölyeler)
-- [ ] **2. adım:** Vardiya defteri (arıza kayıtları, postabaşı, notlar, devreden işler)
+- [x] **2. adım:** Vardiya defteri (arıza kayıtları, postabaşı, notlar, devreden işler)
 - [ ] **3. adım:** İş istekleri ve görevler (atama, süre, otomatik yenilenen liste, bildirim)
 - [ ] **4. adım:** Sunucu kurulumu, otomatik yedek, kullanım kılavuzu
 
@@ -23,6 +23,15 @@ Admin (`/panel/`) şunları yönetir:
 | Mühendis | Tüm atölyeleri görür, iş isteği oluşturur, işe personel atar |
 | Formen | Kendi atölyesini görür, iş isteği oluşturur, işe personel atar |
 | Personel | Kendi atölyesinin vardiya defterini yazar, kendisine atanan görevleri günceller |
+
+## Vardiya defteri
+
+`/vardiya/` sayfası tek ekrandır:
+- **Üstte devreden açık işler:** Önceki vardiyalardan "Devam ediyor" olarak bırakılan işler. Yapılan işi yazıp **Tamamlandı** demek yeterli.
+- **Altta günün kayıtları:** Vardiyalara (00-08, 08-16, 16-24) göre gruplanır, gün gün geriye gidilebilir.
+- Her kayıtta: tarih, vardiya, atölye, postabaşı, makine/hat, arıza, yapılan iş, durum ve not.
+- Personel ve formen sadece kendi atölyesini görür; müdür ve mühendis tümünü görür.
+- Sayfa 30 saniyede bir kendini yeniler (kullanıcı yazı yazarken yenilenmez).
 
 ## Bilgisayarda deneme (Windows)
 

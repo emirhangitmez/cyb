@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block baslik %}Vardiya Defteri · Vardiya Takip{% endblock %}
+{% block icerik %}
+<div class="baslik-satir">
+  <div>
+    <h1>Vardiya Defteri</h1>
+    <p class="soluk">Şu anki vardiya: <strong>{{ simdiki.label }}</strong>{% if not user.tum_atolyeleri_gorur %} · {{ user.atolye }}{% endif %}</p>
+  </div>
+  <a class="dugme buyuk" href="{% url 'kayit_ekle' %}">+ Arıza kaydı ekle</a>
+</div>
+
+<section class="blok">
+  <h2>Devreden açık işler <span class="rozet {% if acik %}uyari{% endif %}">{{ acik|length }}</span></h2>
+  {% for k in acik %}
+  <div class="kart acik-is">
+    <div class="acik-ust">
+      <strong>{{ k.ekipman }}</strong>
+      <span class="soluk">{{ k.tarih|date:"d.m.Y" }} · {{ k.get_vardiya_display }}{% if user.tum_atolyeleri_gorur %} · {{ k.atolye }}{% endif %} · Postabaşı: {{ k.postabasi }}</span>
+    </div>
+    <p><b>Arıza:</b> {{ k.ariza|linebreaksbr }}</p>
+    {% if k.yapilan_is %}<p><b>Yapılan:</b> {{ k.yapilan_is|linebreaksbr }}</p>{% endif %}
+    {% if k.notlar %}<p class="not"><b>Not:</b> {{ k.notlar|linebreaksbr }}</p>{% endif %}
+    <form class="kapat" method="post" action="{% url 'kayit_kapat' k.pk %}">{% csrf_token %}
+      <input name="yapilan_is" placeholder="Ne yapıldı? Yazıp tamamlandı deyin" required>
+      <button class="dugme yesil">Tamamlandı</button>
+      <a class="dugme ikincil" href="{% url 'kayit_duzenle' k.pk %}">Düzenle</a>
+    </form>
+  </div>
+  {% empty %}
+  <p class="soluk">Devreden açık iş yok.</p>
+  {% endfor %}
+</section>
+
+<section class="blok">
+  <form class="tarih-gezgin" method="get">
+    <a class="dugme ikincil" href="?tarih={{ onceki|date:'Y-m-d' }}{% if secili_atolye %}&atolye={{ secili_atolye }}{% endif %}">‹ Önceki gün</a>
+    <input type="date" name="tarih" value="{{ tarih|date:'Y-m-d' }}" onchange="this.form.submit()">
+    <a class="dugme ikincil" href="?tarih={{ sonraki|date:'Y-m-d' }}{% if secili_atolye %}&atolye={{ secili_atolye }}{% endif %}">Sonraki gün ›</a>
+    {% if tarih != bugun %}<a href="?">Bugüne dön</a>{% endif %}
+    {% if atolyeler %}
+    <select name="atolye" onchange="this.form.submit()">
+      <option value="">Tüm atölyeler</option>
+      {% for a in atolyeler %}<option value="{{ a.pk }}" {% if secili_atolye == a.pk|stringformat:"s" %}selected{% endif %}>{{ a }}</option>{% endfor %}
+    </select>
+    {% endif %}
+  </form>
+
+  <h2>{{ tarih|date:"d F Y, l" }}</h2>
+  {% for v, liste in vardiyalar %}
+  <div class="vardiya-baslik {% if tarih == bugun and v == simdiki %}simdi{% endif %}">
+    {{ v.label }}{% if tarih == bugun and v == simdiki %} · şu anki vardiya{% endif %}
+    <span class="soluk">{{ liste|length }} kayıt</span>
+  </div>
+  {% if liste %}
+  <div class="tablo-kap">
+  <table>
+    <thead><tr>{% if user.tum_atolyeleri_gorur %}<th>Atölye</th>{% endif %}<th>Postabaşı</th><th>Ekipman</th><th>Arıza</th><th>Yapılan iş</th><th>Not</th><th>Durum</th><th></th></tr></thead>
+    <tbody>
+    {% for k in liste %}
+      <tr>
+        {% if user.tum_atolyeleri_gorur %}<td>{{ k.atolye.kod }}</td>{% endif %}
+        <td>{{ k.postabasi }}</td><td><strong>{{ k.ekipman }}</strong></td>
+        <td class="metin">{{ k.ariza|linebreaksbr }}</td><td class="metin">{{ k.yapilan_is|linebreaksbr }}</td>
+        <td class="metin">{{ k.notlar|linebreaksbr }}</td>
+        <td>{% if k.acik_mi %}<span class="durum devam">Devam ediyor</span>{% else %}<span class="durum bitti">Tamamlandı</span>{% endif %}</td>
+        <td class="islem">{% if k.atolye_id == user.atolye_id or user.tum_atolyeleri_gorur %}<a href="{% url 'kayit_duzenle' k.pk %}">Düzenle</a>{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endif %}
+  {% endfor %}
+</section>
+
+<script>
+// Başka bir kullanıcının eklediği kayıtlar 30 saniyede bir kendiliğinden görünsün.
+// Kullanıcı bir şey yazıyorsa sayfa yenilenmez.
+setInterval(function () {
+  if (document.hidden) return;
+  var yaziyor = Array.from(document.querySelectorAll("input[name=yapilan_is]")).some(function (i) { return i.value; });
+  var odak = document.activeElement && ["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName);
+  if (!yaziyor && !odak) location.reload();
+}, 30000);
+</script>
+{% endblock %}

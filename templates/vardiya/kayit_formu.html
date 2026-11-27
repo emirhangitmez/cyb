@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block baslik %}{{ baslik }} · Vardiya Takip{% endblock %}
+{% block icerik %}
+<div class="kart form-kart">
+  <h1>{{ baslik }}</h1>
+  {% if kayit %}<p class="soluk">Ekleyen: {{ kayit.olusturan }} · {{ kayit.olusturma|date:"d.m.Y H:i" }}{% if kayit.kapatan %} · Kapatan: {{ kayit.kapatan }} ({{ kayit.kapanma|date:"d.m H:i" }}){% endif %}</p>{% endif %}
+  <form method="post">{% csrf_token %}
+    {% if form.non_field_errors %}<div class="mesaj error">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+    {% for alan in form.hidden_fields %}{{ alan }}{% endfor %}
+    <div class="iki-sutun">
+      {% include "vardiya/alan.html" with alan=form.tarih %}
+      {% include "vardiya/alan.html" with alan=form.vardiya %}
+    </div>
+    <div class="iki-sutun">
+      {% if not form.atolye.is_hidden %}{% include "vardiya/alan.html" with alan=form.atolye %}{% endif %}
+      {% include "vardiya/alan.html" with alan=form.postabasi %}
+    </div>
+    {% include "vardiya/alan.html" with alan=form.ekipman %}
+    {% include "vardiya/alan.html" with alan=form.ariza %}
+    {% include "vardiya/alan.html" with alan=form.yapilan_is %}
+    {% include "vardiya/alan.html" with alan=form.durum %}
+    {% include "vardiya/alan.html" with alan=form.notlar %}
+    <div class="dugmeler">
+      <button class="dugme">Kaydet</button>
+      <a class="dugme ikincil" href="{% url 'defter' %}">Vazgeç</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

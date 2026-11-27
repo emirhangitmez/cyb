@@ -1,0 +1,31 @@
+{
+  "folders": [{ "path": ".", "name": "Vardiya Takip" }],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+    "files.exclude": { "**/__pycache__": true, "staticfiles": true },
+    "files.encoding": "utf8"
+  },
+  "extensions": { "recommendations": ["ms-python.python", "batisteo.vscode-django"] },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Uygulamayı çalıştır",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/manage.py",
+        "args": ["runserver", "0.0.0.0:8000"],
+        "django": true,
+        "justMyCode": true
+      }
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      { "label": "1) Kurulum (ilk sefer)", "type": "shell", "command": "${workspaceFolder}/kurulum.bat", "problemMatcher": [] },
+      { "label": "2) Uygulamayı başlat", "type": "shell", "command": "${workspaceFolder}/baslat.bat", "problemMatcher": [], "isBackground": true },
+      { "label": "Testleri çalıştır", "type": "shell", "command": "venv\\Scripts\\python.exe manage.py test", "problemMatcher": [] }
+    ]
+  }
+}

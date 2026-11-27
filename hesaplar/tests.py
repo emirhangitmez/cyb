@@ -100,4 +100,5 @@ class YetkiKurallari(TemelVeri):
         self.assertTrue(self.formen.is_istegi_olusturabilir)
         self.assertTrue(muhendis.is_istegi_olusturabilir)
         self.assertTrue(self.formen.gorev_atayabilir)
-        self.assertFalse(muhendis.gorev_atayabilir)
+        self.assertTrue(muhendis.gorev_atayabilir)
+        self.assertFalse(personel.gorev_atayabilir)

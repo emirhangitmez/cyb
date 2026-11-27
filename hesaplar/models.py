@@ -101,8 +101,8 @@ class Kullanici(AbstractUser):
 
     @property
     def gorev_atayabilir(self):
-        """Formen kendi atölyesindeki personele görev atar; müdür de atayabilir."""
-        return self.rol in (Yetki.MUDUR, Yetki.FORMEN)
+        """Müdür, mühendis ve formen bir işe personel atayabilir."""
+        return self.rol in (Yetki.MUDUR, Yetki.MUHENDIS, Yetki.FORMEN)
 
     @property
     def tum_atolyeleri_gorur(self):

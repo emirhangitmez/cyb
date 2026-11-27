@@ -19,9 +19,9 @@ Admin (`/panel/`) şunları yönetir:
 
 | Yetki seviyesi | Ne yapabilir |
 |---|---|
-| Müdür | Her şeyi görür, iş isteği oluşturur, görev atayabilir |
-| Mühendis | Tüm atölyeleri görür, iş isteği oluşturur |
-| Formen | Kendi atölyesini görür, iş isteği oluşturur, atölyesindeki personele görev atar |
+| Müdür | Her şeyi görür, iş isteği oluşturur, işe personel atar |
+| Mühendis | Tüm atölyeleri görür, iş isteği oluşturur, işe personel atar |
+| Formen | Kendi atölyesini görür, iş isteği oluşturur, işe personel atar |
 | Personel | Kendi atölyesinin vardiya defterini yazar, kendisine atanan görevleri günceller |
 
 ## Bilgisayarda deneme (Windows)
